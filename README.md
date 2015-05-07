@@ -1,4 +1,4 @@
-# leaderboard
+# leaderboard-Python
 Treehouse student leaderboard/alumni project
 
 Treehouse offers great online training, but once the training is complete, many people leave the community. This project allows for students (current and past) to connect and allows potential employers to see a bit of perspecitive on the badges and points that students have earned.
