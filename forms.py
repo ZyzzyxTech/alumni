@@ -1,8 +1,10 @@
+"""Handles the form data for the application"""
+
 __author__ = "Ken W. Alger, David Dinkins, Dan Johnson, Keri Nicole"
 __copyright__ = "Copyright 2015, ZyzzyxTech"
 __credits__ = ["Ken W. Alger, Dan Johnson, David Dinkins, Keri Nicole"]
 __license__ = "GPL"
-__version__ = "1.0.1"
+__version__ = "0.1.0"
 __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
@@ -31,7 +33,7 @@ def email_exists(form, field):
 class RegisterForm(Form):
     """Creates the site registration form fields and validators"""
     # TODO: Form registration needs to validate Treehouse username, email, and password.
-    # TODO: Registration form includes github address, city, state, and country.
+    # TODO: Registration form includes github URL, city, state, and country.
     pass
 
 

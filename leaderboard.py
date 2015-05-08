@@ -1,19 +1,20 @@
+"""This will create the Treehouse Leaderboard Application"""
+
 __author__ = "Ken W. Alger, David Dinkins, Dan Johnson, Keri Nicole"
 __copyright__ = "Copyright 2015, ZyzzyxTech"
 __credits__ = ["Ken W. Alger, Dan Johnson, David Dinkins, Keri Nicole"]
 __license__ = "GPL"
-__version__ = "1.0.1"
+__version__ = "0.1.0"
 __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
-from flask import (Flask, g, render_template, flash, redirect, url_for,
-                   abort)
-from flask.ext.bcypt import check_password_hash
-from flask.ext.login import (LoginManager, login_user, logout_user,
+from flask import (Flask, g, render_template, flash, redirect, url_for)
+from flask.ext.login import (LoginManager, logout_user,
                              login_required, current_user)
 
 import models
+
 
 # Set the Debug Mode
 DEBUG = True
@@ -21,7 +22,7 @@ DEBUG = True
 # HTTP port on which the app will run
 PORT = 8000
 
-# Externally visable server IP address
+# Externally visible server IP address
 HOST = '0.0.0.0'
 
 # Create an instance of the Flask class
@@ -30,11 +31,16 @@ app = Flask(__name__)
 # set the secret key. keep this really secret...
 app.secret_key = 'k{rz`QiDW8kr9bR8]zv8k]D\P~hx,DkpX%BXYP=[@9^YWN{iV~,\XU$hF;<Cf*'
 
-'''
-----------------------------------------
-Application Management
-----------------------------------------
-'''
+# Login Manager Settings
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+
+# ----------------------------------------
+# Application Management
+# ----------------------------------------
 
 
 @login_manager.user_loader
@@ -60,24 +66,85 @@ def after_request(response):
     return response
 
 
-'''
-----------------------------------------
-Application Routes
-----------------------------------------
-'''
+# ----------------------------------------
+# Application Routes
+# ----------------------------------------
 
 
 @app.route('/')
-def hello_world():
-    return 'Welcome to the Flask based Treehouse Leaderboard Site'
+def index():
+    """Application landing page.
+    Display top 25 registered Treehouse students from the database.
+    """
+    # TODO: setup landing page, stream.html
+    stream = models.User.select().limit(25)
+    return render_template('stream.html', stream=stream)
 
 
-'''
-----------------------------------------
-Run the application
-----------------------------------------
-'''
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    """User registration page"""
+    # TODO: setup registration page, register.html
+    return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=('GET', 'POST'))
+def login():
+    """Login to site page"""
+    # TODO: setup login page, login.html
+    return render_template('login.html', form=form)
+
+
+# ----------------------------------------
+# Login required routes
+# ----------------------------------------
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Logout from application page"""
+    logout_user()
+    flash("Thanks for visiting, you are now logged out. Please come back soon!", "success")
+    return redirect(url_for('index'))
+
+
+@app.route('/leaderboard')
+@login.required
+def leaderboard():
+    """Display the current leaderboard"""
+    # TODO: setup leaderboard page, leaderboard.html
+    return render_template('leaderboard.html')
+
+
+# ----------------------------------------
+# Routes for HTML error handling
+# ----------------------------------------
+
+@app.errorhandler(404)
+def not_found(error):
+    """Handles HTML 404 error conditions."""
+    return render_template('404.html'), 404
+
+
+# ----------------------------------------
+# Run the application, create initial
+# sample user
+# ----------------------------------------
 
 
 if __name__ == '__main__':
-    app.run()
+    models.initialize()
+    try:
+        models.User.create_user(
+            username='kenalger',
+            email='ken@kenwalger.com',
+            password='password',
+            github_account_link='https://github.com/kenwalger',
+            city='Keizer',
+            state='OR',
+            country='USA',
+            admin=True
+        )
+    except ValueError:
+        pass
+    app.run(debug=DEBUG, host=HOST, port=PORT)
