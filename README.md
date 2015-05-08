@@ -23,5 +23,8 @@ Treehouse offers great online training, but once the training is complete, many 
 ######Nice to haves
 * Users github link(s) for showcasing their work.
 * Users geographical location for connecting with nearby students.
+
+
+######Down the road...
 * Social aspect in which users can follow/unfollow each other to facilitate project collaboration.
 
