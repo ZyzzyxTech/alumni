@@ -9,6 +9,7 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
+import requests
 
 def request_user_data(username):
     """Get the JSON data as a dict for a Treehouse student."""
