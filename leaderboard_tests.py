@@ -20,7 +20,7 @@ class ApiRequestsTests(unittest.TestCase):
 
     def test_an_invalid_username_raises_an_exception(self):
         with self.assertRaises(UserRequestException):
-            request_user_data( self.__INVALID_USERNAME)
+            request_user_data(self.__INVALID_USERNAME)
             
     def test_an_invalid_username_should_mention_a_data_issue(self):
         try:
