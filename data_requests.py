@@ -11,6 +11,11 @@ __status__ = "Development"
 
 import requests
 
+from requests.exceptions import Timeout
+from requests.exceptions import ConnectionError
+from requests.exceptions import RequestException
+
+
 def request_user_data(username):
     """Get the JSON data as a dict for a Treehouse student."""
     data = None
