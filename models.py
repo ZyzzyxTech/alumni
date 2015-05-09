@@ -1,5 +1,8 @@
 
-"""Handles the database related functions for the application."""
+"""Handles the database related functions for the application.
+    Note that we are using PostgresqlExtDatabase as opposed to
+    the usual peewee.PostgresqlDatabase.
+"""
 
 __author__ = "Ken W. Alger, David Dinkins, Dan Johnson,  Keri Nicole"
 __copyright__ = "Copyright 2015, ZyzzyxTech"
@@ -18,16 +21,27 @@ from flask.ext.login import UserMixin
 from peewee import *
 from playhouse.postgres_ext import PostgresqlExtDatabase, JSONField
 
-DATABASE = PostgresqlExtDatabase('leaderboard.db', user="postgres")
+DATABASE = PostgresqlExtDatabase(database='leaderboard', user='postgres')
+ROUNDS = 2     # Number of hash rounds, set low for development, increase for production
 
 class BaseModel(Model):
     """A base model that will use our Postgresql database."""
     class Meta:
         database = DATABASE
-        order_by = ('-joined_at', '-th_user_name')
+
 
 class User(UserMixin, BaseModel):
-    th_user_name = CharField(unique=True)
+    """The user model which includes:
+    Treehouse Username
+    Treehouse User JSON data
+    Email address
+    Password
+    GitHub link
+    City, State, & Country
+    Joined at date & time
+    Admin setting
+    """
+    th_username = CharField(unique=True)
     th_user_json_data = JSONField()
     email = CharField(unique=True)
     password = CharField(max_length=100)
@@ -38,17 +52,22 @@ class User(UserMixin, BaseModel):
     joined_at = DateTimeField(default=datetime.datetime.now)
     is_admin = BooleanField(default=False)
 
+    class Meta:
+        order_by = ('-joined_at',)
+
     @classmethod
-    def create_user(cls, username, email, password, github_account_link, city,
+    def create_user(cls, username, user_json, email, password, github_account_link, city,
                     state, country, admin=False):
         # TODO: Generate JSON data prior to storage of user profile data.
+        hashed = bcrypt.hashpw(password, bcrypt.gensalt(ROUNDS))
         try:
             with DATABASE.transaction():
                 cls.create(
                     th_user_name=username,
+                    th_user_json_data=user_json,
                     email=email,
                     # Hashes the password for the first time, 12 rounds
-                    password=bcrypt.hashpw(password, bcrypt.gensalt(12)),
+                    password=hashed,
                     github_account_link=github_account_link,
                     city=city,
                     state=state,
