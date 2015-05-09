@@ -9,10 +9,12 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
-from flask import (Flask, g, render_template, flash, redirect, url_for)
+from flask import (Flask, g, render_template, flash, redirect, url_for, abort)
 from flask.ext.login import (LoginManager, logout_user,
                              login_required, current_user)
 
+import data_requests
+import forms
 import models
 
 
@@ -76,14 +78,15 @@ def index():
     """Application landing page.
     Display top 25 registered Treehouse students from the database.
     """
-    # TODO: setup landing page, stream.html
+    # TODO: setup landing page, index.html
     stream = models.User.select().limit(25)
-    return render_template('stream.html', stream=stream)
+    return render_template('index.html', stream=stream)
 
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     """User registration page"""
+    form = forms.RegisterForm()
     # TODO: setup registration page, register.html
     return render_template('register.html', form=form)
 
@@ -91,6 +94,7 @@ def register():
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     """Login to site page"""
+    form = forms.LoginForm()
     # TODO: setup login page, login.html
     return render_template('login.html', form=form)
 
@@ -109,10 +113,19 @@ def logout():
 
 
 @app.route('/leaderboard')
-@login.required
-def leaderboard():
+@login_required
+def leaderboard(username=None):
     """Display the current leaderboard"""
     # TODO: setup leaderboard page, leaderboard.html
+    template = 'stream.html'
+    if username and username != current_user.username:
+        try:
+            user = models.User.select.where(
+                models.User.th_username**username).get()
+        except models.DoesNotExist:
+            abort(404)
+        else:
+            stream = user.leaders.limit(100)
     return render_template('leaderboard.html')
 
 
@@ -137,6 +150,7 @@ if __name__ == '__main__':
     try:
         models.User.create_user(
             username='kenalger',
+            user_json=data_requests.request_user_data('kenalger'),
             email='ken@kenwalger.com',
             password='password',
             github_account_link='https://github.com/kenwalger',

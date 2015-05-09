@@ -18,16 +18,27 @@ from flask.ext.login import UserMixin
 from peewee import *
 from playhouse.postgres_ext import PostgresqlExtDatabase, JSONField
 
-DATABASE = PostgresqlExtDatabase('leaderboard.db', user="postgres")
+DATABASE = PostgresqlExtDatabase('leader_board.db', user="postgres")
+
 
 class BaseModel(Model):
     """A base model that will use our Postgresql database."""
     class Meta:
         database = DATABASE
-        order_by = ('-joined_at', '-th_user_name')
+
 
 class User(UserMixin, BaseModel):
-    th_user_name = CharField(unique=True)
+    """The user model which includes:
+    Treehouse Username
+    Treehouse User JSON data
+    Email address
+    Password
+    GitHub link
+    City, State, & Country
+    Joined at date & time
+    Admin setting
+    """
+    th_username = CharField(unique=True)
     th_user_json_data = JSONField()
     email = CharField(unique=True)
     password = CharField(max_length=100)
@@ -38,14 +49,18 @@ class User(UserMixin, BaseModel):
     joined_at = DateTimeField(default=datetime.datetime.now)
     is_admin = BooleanField(default=False)
 
+    class Meta:
+        order_by = ('-joined_at',)
+
     @classmethod
-    def create_user(cls, username, email, password, github_account_link, city,
+    def create_user(cls, username, user_json, email, password, github_account_link, city,
                     state, country, admin=False):
         # TODO: Generate JSON data prior to storage of user profile data.
         try:
             with DATABASE.transaction():
                 cls.create(
                     th_user_name=username,
+                    th_user_json_data=user_json,
                     email=email,
                     # Hashes the password for the first time, 12 rounds
                     password=bcrypt.hashpw(password, bcrypt.gensalt(12)),
