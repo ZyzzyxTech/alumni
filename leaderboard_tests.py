@@ -13,7 +13,6 @@ import unittest
 
 from data_requests import request_user_data
 from data_requests import UserRequestException
-
 from user_stats import UserStats
 
 
@@ -64,13 +63,3 @@ class UserStatsTests(unittest.TestCase):
     def test_if_no_rank_can_be_assigned_an_error_is_raised(self):
         with self.assertRaises(KeyError):
             self.stats.get_topic_rank("COBOL")
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        

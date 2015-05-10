@@ -19,6 +19,7 @@ import models
 
 
 
+
 # Set the Debug Mode
 DEBUG = True
 
@@ -192,8 +193,8 @@ if __name__ == '__main__':
     models.initialize()
     try:
         models.Student.create_student(
-            username='craigsdennis',
-            user_json=data_requests.request_user_data('craigsdennis'),
+            username='kenalger',
+            user_json=data_requests.request_user_data('kenalger'),
             email='ken@kenwalger.com',
             password='password',
             github_account_link='https://github.com/kenwalger',
