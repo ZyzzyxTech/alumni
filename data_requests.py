@@ -11,9 +11,14 @@ __status__ = "Development"
 
 import requests
 
+from requests.exceptions import Timeout
+from requests.exceptions import ConnectionError
+from requests.exceptions import RequestException
+
 
 def request_user_data(username):
     """Get the JSON data as a dict for a Treehouse student."""
+    data = None
 
     try:
         response = requests.get("https://teamtreehouse.com/{}.json".format(username))
@@ -28,3 +33,11 @@ def request_user_data(username):
         raise UserRequestException("Received invalid data from profile.")
     else:
         return data
+        
+        
+class UserRequestException(Exception):
+    def __init__(self, reason):
+        self.reason = reason
+        
+    def __str__(self):
+        return self.reason
