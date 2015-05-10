@@ -184,25 +184,10 @@ def server_error(error):
     return render_template('500.html'), 500
 
 # ----------------------------------------
-# Run the application, create initial
-# sample user
+# Run the application
 # ----------------------------------------
 
 
 if __name__ == '__main__':
     models.initialize()
-    try:
-        models.Student.create_student(
-            username='kenalger',
-            user_json=data_requests.request_user_data('kenalger'),
-            email='ken@kenwalger.com',
-            password='password',
-            github_account_link='https://github.com/kenwalger',
-            city='Portland',
-            state='OR',
-            country='USA',
-            admin=True
-        )
-    except ValueError:
-        pass
     app.run(debug=DEBUG, host=HOST, port=PORT)
