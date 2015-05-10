@@ -11,9 +11,9 @@ __status__ = "Development"
 
 import requests
 
+
 def request_user_data(username):
     """Get the JSON data as a dict for a Treehouse student."""
-    data = None
 
     try:
         response = requests.get("https://teamtreehouse.com/{}.json".format(username))

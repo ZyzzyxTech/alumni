@@ -18,6 +18,7 @@ import forms
 import models
 
 
+
 # Set the Debug Mode
 DEBUG = True
 
@@ -79,15 +80,27 @@ def index():
     Display top 25 registered Treehouse students from the database.
     """
     # TODO: setup landing page, index.html
-    stream = models.User.select().limit(25)
+    stream = models.Student.select().limit(25)
     return render_template('index.html', stream=stream)
 
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     """User registration page"""
-    form = forms.RegisterForm()
-    # TODO: setup registration page, register.html
+    form = forms.StudentRegisterForm()
+    if form.validate_on_submit():
+        flash("Yippie, you have joined the Treehouse Alumni Site!", "success")
+        models.Student.create_student(
+            username=form.th_username.data,
+            user_json=data_requests.request_user_data(form.th_username.data),
+            email=form.email.data,
+            password=form.password.data,
+            github_account_link=form.github.data,
+            city=form.city.data,
+            state=form.state.data,
+            country=form.country.data
+        )
+        return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
 
@@ -178,13 +191,13 @@ def server_error(error):
 if __name__ == '__main__':
     models.initialize()
     try:
-        models.Student.create_user(
-            username='kenalger',
-            user_json=data_requests.request_user_data('kenalger'),
+        models.Student.create_student(
+            username='craigsdennis',
+            user_json=data_requests.request_user_data('craigsdennis'),
             email='ken@kenwalger.com',
             password='password',
             github_account_link='https://github.com/kenwalger',
-            city='Keizer',
+            city='Portland',
             state='OR',
             country='USA',
             admin=True

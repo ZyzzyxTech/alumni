@@ -13,7 +13,6 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
-
 import datetime
 
 import bcrypt
@@ -22,7 +21,7 @@ from peewee import *
 from playhouse.postgres_ext import PostgresqlExtDatabase, JSONField
 
 DATABASE = PostgresqlExtDatabase(database='leaderboard', user='postgres')
-ROUNDS = 2     # Number of hash rounds, set low for development, increase for production
+ROUNDS = 5     # Number of hash rounds, set low for development, increase for production
 
 class BaseModel(Model):
     """A base model that will use our Postgresql database."""
@@ -58,12 +57,14 @@ class Student(UserMixin, BaseModel):
     @classmethod
     def create_student(cls, username, user_json, email, password, github_account_link, city,
                     state, country, admin=False):
+        """Generate the student table in the database."""
         # TODO: Generate JSON data prior to storage of user profile data.
-        hashed = bcrypt.hashpw(password, bcrypt.gensalt(ROUNDS))
+        encoded_password = password.encode('utf-8')
+        hashed = bcrypt.hashpw(encoded_password, bcrypt.gensalt(ROUNDS))
         try:
             with DATABASE.transaction():
                 cls.create(
-                    th_user_name=username,
+                    th_username=username,
                     th_user_json_data=user_json,
                     email=email,
                     password=hashed,
@@ -76,7 +77,33 @@ class Student(UserMixin, BaseModel):
             raise ValueError("Sorry, user already exists.")
 
 
+class User(UserMixin, BaseModel):
+    """The non-student user model."""
+    username = CharField(unique=True)
+    email = CharField(unique=True)
+    password = CharField(max_length=100)
+    joined_at = DateTimeField(default=datetime.datetime.now)
+
+    class Meta:
+        order_by = ('-joined_at',)
+
+    @classmethod
+    def create_user(cls, username, email, password, admin=False):
+        """Generate the user table in the database."""
+        encoded_password = password.encode('utf-8')
+        hashed = bcrypt.hashpw(encoded_password, bcrypt.gensalt(ROUNDS))
+        try:
+            with DATABASE.transaction():
+                cls.create(
+                    username=username,
+                    email=email,
+                    password=hashed,
+                    is_admin=admin)
+        except IntegrityError:
+            raise ValueError("User already exists")
+
+
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([Student], safe=True)
+    DATABASE.create_tables([Student, User], safe=True)
     DATABASE.close()

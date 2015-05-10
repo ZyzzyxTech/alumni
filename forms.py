@@ -9,25 +9,30 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
-
-from flask_wtf import Form
-from flask_wtf.html5 import URLField
-from wtforms import StringField, PasswordField, TextAreaField
+from flask.ext.wtf import Form
+from wtforms import StringField, PasswordField
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
                                 Length, EqualTo)
 
-from models import Student
+from models import Student, User
 
 
-def name_exists(form, field):
+def student_name_exists(form, field):
+    """Checks to see if the student name already exists."""
+    if Student.select().where(Student.th_username == field.data).exists():
+        raise ValidationError('Sorry, that Treehouse student is already in our system.')
+
+
+def user_name_exists(form, field):
     """Checks to see if the user name already exists."""
-    if Student.select().where(Student.th_user_name == field.data).exists():
+    if User.select().where(User.username == field.data).exists():
         raise ValidationError('Sorry, that Treehouse student is already in our system.')
 
 
 def email_exists(form, field):
-    """Checks to see if the email has already exists."""
-    if Student.select().where(Student.email == field.data).exists():
+    """Checks to see if the email already exists."""
+    if Student.select().where(Student.email == field.data).exists() | \
+            User.select().where(User.email == field.data).exists():
         raise ValidationError('Sorry, that email address is already in our system.')
 
 
@@ -39,7 +44,7 @@ class StudentRegisterForm(Form):
         'Treehouse Username',
         validators=[
             DataRequired(),
-            name_exists
+            student_name_exists
         ])
     email = StringField(
         'Email',
@@ -51,13 +56,15 @@ class StudentRegisterForm(Form):
     github = StringField(
         'Github URL',
         validators=[
-            URLField()
+            DataRequired()
         ])
     city = StringField(
-        'City'
+        'City',
+        validators=[DataRequired()]
     )
     state = StringField(
-        'State'
+        'State',
+        validators=[DataRequired()]
     )
     country = StringField(
         'Country',
@@ -71,7 +78,39 @@ class StudentRegisterForm(Form):
             EqualTo('password2', message='Passwords must match')
         ])
     password2 = PasswordField(
-        'Confirm Passord',
+        'Confirm Password',
+        validators=[DataRequired()]
+    )
+
+
+class UserRegisterForm(Form):
+    username = StringField(
+        'Username',
+        validators=[
+            DataRequired(),
+            Regexp(
+                r'^[a-zA-Z0-9_]+$',
+                message=("Username should be one word, letters, "
+                         "numbers, and underscores only.")
+            ),
+            user_name_exists
+        ])
+    email = StringField(
+        'Email',
+        validators=[
+            DataRequired(),
+            Email(),
+            email_exists
+        ])
+    password = PasswordField(
+        'Password',
+        validators=[
+            DataRequired(),
+            Length(min=2),
+            EqualTo('password2', message='Passwords must match')
+        ])
+    password2 = PasswordField(
+        'Confirm Password',
         validators=[DataRequired()]
     )
 
