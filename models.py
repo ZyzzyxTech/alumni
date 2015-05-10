@@ -30,8 +30,8 @@ class BaseModel(Model):
         database = DATABASE
 
 
-class User(UserMixin, BaseModel):
-    """The user model which includes:
+class Student(UserMixin, BaseModel):
+    """The student model which includes:
     Treehouse Username
     Treehouse User JSON data
     Email address
@@ -56,7 +56,7 @@ class User(UserMixin, BaseModel):
         order_by = ('-joined_at',)
 
     @classmethod
-    def create_user(cls, username, user_json, email, password, github_account_link, city,
+    def create_student(cls, username, user_json, email, password, github_account_link, city,
                     state, country, admin=False):
         # TODO: Generate JSON data prior to storage of user profile data.
         hashed = bcrypt.hashpw(password, bcrypt.gensalt(ROUNDS))
@@ -66,7 +66,6 @@ class User(UserMixin, BaseModel):
                     th_user_name=username,
                     th_user_json_data=user_json,
                     email=email,
-                    # Hashes the password for the first time, 12 rounds
                     password=hashed,
                     github_account_link=github_account_link,
                     city=city,
@@ -79,5 +78,5 @@ class User(UserMixin, BaseModel):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User], safe=True)
+    DATABASE.create_tables([Student], safe=True)
     DATABASE.close()

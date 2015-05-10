@@ -99,6 +99,18 @@ def login():
     return render_template('login.html', form=form)
 
 
+@app.route('/about', methods=('GET', 'POST'))
+def about():
+    """About page"""
+    return render_template('about.html')
+
+
+@app.route('/legal', methods=('GET', 'POST'))
+def legal():
+    """Legal disclaimer"""
+    return render_template('legal.html')
+
+
 # ----------------------------------------
 # Login required routes
 # ----------------------------------------
@@ -117,7 +129,7 @@ def logout():
 def leaderboard(username=None):
     """Display the current leaderboard"""
     # TODO: setup leaderboard page, leaderboard.html
-    template = 'stream.html'
+    template = 'leaderboard.html'
     if username and username != current_user.username:
         try:
             user = models.User.select.where(
@@ -133,11 +145,29 @@ def leaderboard(username=None):
 # Routes for HTML error handling
 # ----------------------------------------
 
+@app.errorhandler(403)
+def forbidden(error):
+    """Handles HTML 403 error conditions."""
+    return render_template('403.html'), 403
+
+
 @app.errorhandler(404)
 def not_found(error):
     """Handles HTML 404 error conditions."""
     return render_template('404.html'), 404
 
+
+@app.errorhandler(418)
+def tea_pot(error):
+    """Handles HTML 418 error conditions.
+    I'm a little teapot, short and stout..."""
+    return render_template('418.html'), 418
+
+
+@app.errorhandler(500)
+def server_error(error):
+    """Handles HTML 500 error donditions."""
+    return render_template('500.html'), 500
 
 # ----------------------------------------
 # Run the application, create initial
@@ -148,7 +178,7 @@ def not_found(error):
 if __name__ == '__main__':
     models.initialize()
     try:
-        models.User.create_user(
+        models.Student.create_user(
             username='kenalger',
             user_json=data_requests.request_user_data('kenalger'),
             email='ken@kenwalger.com',
