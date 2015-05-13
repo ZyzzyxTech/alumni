@@ -53,8 +53,14 @@ class StudentRegisterForm(Form):
             Email(),
             email_exists
         ])
+    first_name = StringField(
+        'First Name',
+        validators=[DataRequired()])
+    last_name = StringField(
+        'Last Name',
+        validators=[DataRequired()])
     github = StringField(
-        'Github URL',
+        'Github Username',
         validators=[
             DataRequired()
         ])

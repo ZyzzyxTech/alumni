@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="/static/css/normalize.min.css">
-        <link rel="stylesheet" href="/static/css/main.css">
+        <!--<link rel="stylesheet" href="/static/css/main.css">-->
 
         <!--[if lt IE 9]>
             <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -30,7 +30,7 @@
             <div class="grid-33">
 
                 <!-- Say Hi -->
-                <h1>Hello{% if current_user.is_authenticated() %} {{ current_user.username }}{% endif %}!</h1>
+                <h1>Hello{% if current_user.is_authenticated() %} {{ current_user.first_name }}{% endif %}!</h1>
 
             </div>
 
@@ -38,10 +38,10 @@
 
                 <!-- Log in/Log out -->
                 {% if current_user.is_authenticated() %}
-                <a href="{{ url_for('logout') }}" class="icon-power" title="Log out"></a>
+                <a href="{{ url_for('logout') }}" class="icon-power" title="Log out">Log out</a>
                 {% else %}
-                <a href="{{ url_for('login') }}" class="icon-power" title="Log in"></a>
-                <a href="{{ url_for('register') }}" class="icon-profile" title="Register"></a>
+                <a href="{{ url_for('login') }}" class="icon-power" title="Log in">Log in</a>
+                <a href="{{ url_for('register') }}" class="icon-profile" title="Register">Sign up</a>
                 {% endif %}
 
             </div>
@@ -74,7 +74,7 @@
           <div class="row">
 
             <p>A student connection app built with Flask<br>by Treehouse Alumni</p>
-
+            <a href="{{ url_for('about') }}">About Us</a> | <a href="{{ url_for('legal') }}">Legal Stuff</a>
           </div>
 
         </footer>

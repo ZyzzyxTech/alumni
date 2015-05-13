@@ -9,15 +9,15 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
+import bcrypt
+
 from flask import (Flask, g, render_template, flash, redirect, url_for, abort)
-from flask.ext.login import (LoginManager, logout_user,
+from flask.ext.login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
 
 import data_requests
 import forms
 import models
-
-
 
 
 # Set the Debug Mode
@@ -33,7 +33,7 @@ HOST = '0.0.0.0'
 app = Flask(__name__)
 
 # set the secret key. keep this really secret...
-app.secret_key = 'k{rz`QiDW8kr9bR8]zv8k]D\P~hx,DkpX%BXYP=[@9^YWN{iV~,\XU$hF;<Cf*'
+app.secret_key = 'k{rz`QiDW8kr9bR8]zv8k]D\P~hx,DkpX%BXadf32wexP=[@9^YWN{iV~,\XU$hF;<Cf*'
 
 # Login Manager Settings
 
@@ -95,8 +95,10 @@ def register():
             username=form.th_username.data,
             user_json=data_requests.request_user_data(form.th_username.data),
             email=form.email.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
             password=form.password.data,
-            github_account_link=form.github.data,
+            github_username=form.github.data,
             city=form.city.data,
             state=form.state.data,
             country=form.country.data
@@ -108,8 +110,21 @@ def register():
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     """Login to site page"""
+    # TODO: Fix user login password check
     form = forms.LoginForm()
-    # TODO: setup login page, login.html
+    if form.validate_on_submit():
+        try:
+            student = models.Student.get(models.Student.email == form.email.data)
+        except models.DoesNotExist:
+            flash("Your email or password doesn't match!", "error")
+        else:
+            hashed = bcrypt.hashpw(form.password.data.encode('utf-8'), bcrypt.gensalt(models.ROUNDS))
+            if bcrypt.hashpw(student.password.encode('utf-8'), hashed):
+                login_user(student)
+                flash("You've been logged in!", "success")
+                return redirect(url_for('index'))
+            else:
+                flash("Your email or password doesn't match!", "error")
     return render_template('login.html', form=form)
 
 
@@ -180,7 +195,7 @@ def tea_pot(error):
 
 @app.errorhandler(500)
 def server_error(error):
-    """Handles HTML 500 error donditions."""
+    """Handles HTML 500 error conditions."""
     return render_template('500.html'), 500
 
 # ----------------------------------------

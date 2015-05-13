@@ -13,15 +13,16 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
+import bcrypt
 import datetime
 
-import bcrypt
 from flask.ext.login import UserMixin
 from peewee import *
 from playhouse.postgres_ext import PostgresqlExtDatabase, JSONField
 
 DATABASE = PostgresqlExtDatabase(database='leaderboard', user='postgres')
 ROUNDS = 5     # Number of hash rounds, set low for development, increase for production
+
 
 class BaseModel(Model):
     """A base model that will use our Postgresql database."""
@@ -43,8 +44,10 @@ class Student(UserMixin, BaseModel):
     th_username = CharField(unique=True)
     th_user_json_data = JSONField()
     email = CharField(unique=True)
+    first_name = CharField(max_length=50)
+    last_name = CharField(max_length=50)
     password = CharField(max_length=100)
-    github_account_link = CharField(max_length=255)
+    github_username = CharField(max_length=255)
     city = CharField(max_length=100)
     state = CharField(max_length=50)
     country = CharField(max_length=25)
@@ -55,20 +58,20 @@ class Student(UserMixin, BaseModel):
         order_by = ('-joined_at',)
 
     @classmethod
-    def create_student(cls, username, user_json, email, password, github_account_link, city,
+    def create_student(cls, username, user_json, email, first_name, last_name, password, github_username, city,
                     state, country, admin=False):
         """Generate the student table in the database."""
         # TODO: Generate JSON data prior to storage of user profile data.
-        encoded_password = password.encode('utf-8')
-        hashed = bcrypt.hashpw(encoded_password, bcrypt.gensalt(ROUNDS))
         try:
             with DATABASE.transaction():
                 cls.create(
                     th_username=username,
                     th_user_json_data=user_json,
                     email=email,
-                    password=hashed,
-                    github_account_link=github_account_link,
+                    first_name=first_name,
+                    last_name=last_name,
+                    password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS)),
+                    github_username=github_username,
                     city=city,
                     state=state,
                     country=country,
@@ -90,14 +93,12 @@ class User(UserMixin, BaseModel):
     @classmethod
     def create_user(cls, username, email, password, admin=False):
         """Generate the user table in the database."""
-        encoded_password = password.encode('utf-8')
-        hashed = bcrypt.hashpw(encoded_password, bcrypt.gensalt(ROUNDS))
         try:
             with DATABASE.transaction():
                 cls.create(
                     username=username,
                     email=email,
-                    password=hashed,
+                    password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS)),
                     is_admin=admin)
         except IntegrityError:
             raise ValueError("User already exists")
