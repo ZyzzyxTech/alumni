@@ -119,7 +119,7 @@ def login():
             flash("Your email or password doesn't match!", "error")
         else:
             hashed = bcrypt.hashpw(form.password.data.encode('utf-8'), bcrypt.gensalt(models.ROUNDS))
-            if bcrypt.hashpw(student.password.encode('utf-8'), hashed):
+            if bcrypt.hashpw(student.password.encode('utf-8'), hashed) == hashed:
                 login_user(student)
                 flash("You've been logged in!", "success")
                 return redirect(url_for('index'))
