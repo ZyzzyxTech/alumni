@@ -12,17 +12,13 @@ Treehouse offers great online training, but once the training is complete, many 
 
 ###Bullet Points
 
-####Users
+####Students
 
-* User accounts have an email address, password, treehouse user name.
+* Student accounts have an email address, password, treehouse user name, github username, first & last names, city, state, country info.
 * User email addresses are unique.
 * Passwords are hashed.
-* Logged in users see menu items to log out and update their profile.
+* Logged in users see menu items to log out, update their profile, and leaderboard info.
 * Logged out users see menu items to log in or sign up.
-
-######Nice to haves
-* Users github link(s) for showcasing their work.
-* Users geographical location for connecting with nearby students.
 
 
 ######Down the road...
