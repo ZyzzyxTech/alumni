@@ -4,9 +4,9 @@
     the usual peewee.PostgresqlDatabase.
 """
 
-__author__ = "Ken W. Alger, David Dinkins, Dan Johnson,  Keri Nicole"
+__author__ = "Ken W. Alger, David Dinkins, Dan Johnson, Keri Nicole"
 __copyright__ = "Copyright 2015, ZyzzyxTech"
-__credits__ = ["Ken W. Alger, Dan Johnson, David Dinkins, Keri Nicole"]
+__credits__ = ["David Dinkins, Ken W. Alger, Dan Johnson, Keri Nicole"]
 __license__ = "GPL"
 __version__ = "0.1.0"
 __maintainer__ = "Ken W. Alger"
@@ -82,31 +82,7 @@ class Student(UserMixin, BaseModel):
             raise ValueError("Sorry, user already exists.")
 
 
-class User(UserMixin, BaseModel):
-    """The non-student user model."""
-    username = CharField(unique=True)
-    email = CharField(unique=True)
-    password = CharField(max_length=100)
-    joined_at = DateTimeField(default=datetime.datetime.now)
-
-    class Meta:
-        order_by = ('-joined_at',)
-
-    @classmethod
-    def create_user(cls, username, email, password, admin=False):
-        """Generate the user table in the database."""
-        try:
-            with DATABASE.transaction():
-                cls.create(
-                    username=username,
-                    email=email,
-                    password=hashpw(password.encode('utf-8'), gensalt(ROUNDS)),
-                    is_admin=admin)
-        except IntegrityError:
-            raise ValueError("User already exists")
-
-
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([Student, User], safe=True)
+    DATABASE.create_tables([Student], safe=True)
     DATABASE.close()
