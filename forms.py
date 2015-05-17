@@ -23,16 +23,9 @@ def student_name_exists(form, field):
         raise ValidationError('Sorry, that Treehouse student is already in our system.')
 
 
-def user_name_exists(form, field):
-    """Checks to see if the user name already exists."""
-    if User.select().where(User.username == field.data).exists():
-        raise ValidationError('Sorry, that Treehouse student is already in our system.')
-
-
 def email_exists(form, field):
     """Checks to see if the email already exists."""
-    if Student.select().where(Student.email == field.data).exists() | \
-            User.select().where(User.email == field.data).exists():
+    if Student.select().where(Student.email == field.data).exists():
         raise ValidationError('Sorry, that email address is already in our system.')
 
 
