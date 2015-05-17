@@ -42,7 +42,6 @@ Registration Forms
 class StudentRegisterForm(Form):
     """Creates the site registration form fields and validators"""
     # TODO: Form registration needs to validate Treehouse username, email, and password.
-    # TODO: Registration form includes github URL, city, state, and country.
     th_username = StringField(
         'Treehouse Username',
         validators=[
@@ -63,22 +62,13 @@ class StudentRegisterForm(Form):
         'Last Name',
         validators=[DataRequired()])
     github = StringField(
-        'Github Username',
-        validators=[
-            DataRequired()
-        ])
+        'Github Username')
     city = StringField(
-        'City',
-        validators=[DataRequired()]
-    )
+        'City')
     state = StringField(
-        'State',
-        validators=[DataRequired()]
-    )
+        'State')
     country = StringField(
-        'Country',
-        validators=[DataRequired()]
-    )
+        'Country')
     password = PasswordField(
         'Password',
         validators=[
@@ -96,6 +86,29 @@ class LoginForm(Form):
     """The form for logging into the site"""
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
+
+
+class UpdateProfile(Form):
+    """The form for updating profile information"""
+
+    email = StringField(
+        'Email',
+        validators=[
+            email_exists
+        ])
+    first_name = StringField(
+        'First Name')
+    last_name = StringField(
+        'Last Name')
+    github = StringField(
+        'Github Username')
+    city = StringField(
+        'City')
+    state = StringField(
+        'State')
+    country = StringField(
+        'Country')
+
 
 """
 Password Reset Forms

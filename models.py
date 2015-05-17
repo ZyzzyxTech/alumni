@@ -86,6 +86,15 @@ class Student(UserMixin, BaseModel):
             raise ValueError("Sorry, user already exists.")
 
     def get_token(self, expiration=1800):
+        """
+        Encode a secure token
+        :param expiration:
+        :return:
+        """
+        """
+        :param expiration:
+        :return:
+        """
         s = Serializer(SECRET_KEY, expiration)
         return s.dumps({'student': self.id}).decode(CHARACTER_ENCODING)
 

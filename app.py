@@ -9,8 +9,10 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
-from bcrypt import hashpw
 
+
+from bcrypt import hashpw
+from datetime import datetime
 from flask import (Flask, g, render_template, flash, redirect, url_for, abort)
 from flask.ext.login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
@@ -163,6 +165,15 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/update', methods=('GET', 'POST'))
+@login_required
+def update():
+    """Update the current user's profile"""
+    form = forms.UpdateProfile()
+    # TODO: Update student profile
+    return render_template('update-profile.html', form=form)
+
+
 @app.route('/leaderboard')
 @login_required
 def leaderboard(username=None):
@@ -187,14 +198,6 @@ Application View Routes :: Password Reset
 def forgot_password():
     form = forms.ResetPassword()
     # TODO: Handle token creation for password reset
-    # token = request.args.get('token', None)
-    # form = ResetPassword(request.form)
-    # if form.validate_on_submit():
-    #     email = form.email.data
-    #     student = student.query.filter_by(email=email).first()
-    #     if student:
-    #         token = student.get_token()
-    #         print token
     return render_template('reset.html', form=form)
 
 """
