@@ -14,7 +14,7 @@ from wtforms import StringField, PasswordField
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
                                 Length, EqualTo)
 
-from models import Student, User
+from models import Student
 
 
 def student_name_exists(form, field):
@@ -81,38 +81,6 @@ class StudentRegisterForm(Form):
         validators=[
             DataRequired(),
             Length(min=8),
-            EqualTo('password2', message='Passwords must match')
-        ])
-    password2 = PasswordField(
-        'Confirm Password',
-        validators=[DataRequired()]
-    )
-
-
-class UserRegisterForm(Form):
-    username = StringField(
-        'Username',
-        validators=[
-            DataRequired(),
-            Regexp(
-                r'^[a-zA-Z0-9_]+$',
-                message=("Username should be one word, letters, "
-                         "numbers, and underscores only.")
-            ),
-            user_name_exists
-        ])
-    email = StringField(
-        'Email',
-        validators=[
-            DataRequired(),
-            Email(),
-            email_exists
-        ])
-    password = PasswordField(
-        'Password',
-        validators=[
-            DataRequired(),
-            Length(min=2),
             EqualTo('password2', message='Passwords must match')
         ])
     password2 = PasswordField(
