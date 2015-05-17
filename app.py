@@ -9,7 +9,8 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
-import bcrypt
+from bcrypt import hashpw
+from bcrypt import gensalt
 
 from flask import (Flask, g, render_template, flash, redirect, url_for, abort)
 from flask.ext.login import (LoginManager, login_user, logout_user,
@@ -33,7 +34,7 @@ HOST = '0.0.0.0'
 app = Flask(__name__)
 
 # set the secret key. keep this really secret...
-app.secret_key = 'k{rz`QiDW8kr9bR8]zv8k]D\P~hx,DkpX%BXadf32wexP=[@9^YWN{iV~,\XU$hF;<Cf*'
+app.secret_key = 'k{rz`QiDW8kr9bR8]zv8k]D\P~hx,DkpX%BX3adf32wexP=[@9^YWN{iV~,\XU$hF;<Cf*'
 
 # Login Manager Settings
 
@@ -48,9 +49,9 @@ login_manager.login_view = 'login'
 
 
 @login_manager.user_loader
-def load_user(userid):
+def load_student(student_id):
     try:
-        return models.User.get(models.User.id == userid)
+        return models.Student.get(models.Student.id == student_id)
     except models.DoesNotExist:
         return None
 
@@ -118,11 +119,11 @@ def login():
         except models.DoesNotExist:
             flash("Your email or password doesn't match!", "error")
         else:
-            hashed = bcrypt.hashpw(form.password.data.encode('utf-8'), bcrypt.gensalt(models.ROUNDS))
-            if bcrypt.hashpw(student.password.encode('utf-8'), hashed) == hashed:
+            if student.password == hashpw(form.password.data.encode('UTF_8'),
+                                          student.password.encode('UTF-8')).decode():
                 login_user(student)
                 flash("You've been logged in!", "success")
-                return redirect(url_for('index'))
+                return redirect(url_for('leaderboard'))
             else:
                 flash("Your email or password doesn't match!", "error")
     return render_template('login.html', form=form)

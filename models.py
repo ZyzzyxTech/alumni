@@ -13,9 +13,11 @@ __maintainer__ = "Ken W. Alger"
 __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
-import bcrypt
 import datetime
 
+
+from bcrypt import gensalt
+from bcrypt import hashpw
 from flask.ext.login import UserMixin
 from peewee import *
 from playhouse.postgres_ext import PostgresqlExtDatabase, JSONField
@@ -70,7 +72,7 @@ class Student(UserMixin, BaseModel):
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
-                    password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS)),
+                    password=hashpw(password.encode('UTF-8'), gensalt(ROUNDS)),
                     github_username=github_username,
                     city=city,
                     state=state,
@@ -98,7 +100,7 @@ class User(UserMixin, BaseModel):
                 cls.create(
                     username=username,
                     email=email,
-                    password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS)),
+                    password=hashpw(password.encode('utf-8'), gensalt(ROUNDS)),
                     is_admin=admin)
         except IntegrityError:
             raise ValueError("User already exists")
