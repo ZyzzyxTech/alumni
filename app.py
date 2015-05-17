@@ -10,31 +10,40 @@ __email__ = "ken@kenwalger.com"
 __status__ = "Development"
 
 from bcrypt import hashpw
-from bcrypt import gensalt
 
 from flask import (Flask, g, render_template, flash, redirect, url_for, abort)
 from flask.ext.login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
+from flask_mail import Mail
 
+import config
 import data_requests
 import forms
 import models
 
 
-# Set the Debug Mode
-DEBUG = True
+# Statement for enabling the development environment
+DEBUG = config.DEBUG
 
 # HTTP port on which the app will run
-PORT = 8000
+PORT = config.HTTP_PORT
 
 # Externally visible server IP address
-HOST = '0.0.0.0'
+HOST = config.HOST_IP
 
 # Create an instance of the Flask class
 app = Flask(__name__)
+mail = Mail(app)
 
 # set the secret key. keep this really secret...
-app.secret_key = 'k{rz`QiDW8kr9bR8]zv8k]D\P~hx,DkpX%BX3adf32wexP=[@9^YWN{iV~,\XU$hF;<Cf*'
+app.secret_key = config.SECRET_KEY
+
+# Mail Server Settings
+app.config['MAIL_SERVER'] = config.MAIL_SERVER
+app.config['MAIL_PORT'] = config.MAIL_PORT
+app.config['MAIL_USE_SSL'] = config.MAIL_USE_SSL
+app.config['MAIL_USERNAME'] = config.MAIL_USERNAME
+app.config['MAIL_PASSWORD'] = config.MAIL_PASSWORD
 
 # Login Manager Settings
 
@@ -43,9 +52,9 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 
-# ----------------------------------------
-# Application Management
-# ----------------------------------------
+"""
+Application Management
+"""
 
 
 @login_manager.user_loader
@@ -71,9 +80,9 @@ def after_request(response):
     return response
 
 
-# ----------------------------------------
-# Application Routes
-# ----------------------------------------
+"""
+Application View Routes
+"""
 
 
 @app.route('/')
@@ -141,9 +150,9 @@ def legal():
     return render_template('legal.html')
 
 
-# ----------------------------------------
-# Login required routes
-# ----------------------------------------
+"""
+Application View Routes :: Login Required
+"""
 
 @app.route('/logout')
 @login_required
@@ -170,10 +179,27 @@ def leaderboard(username=None):
             stream = user.leaders.limit(100)
     return render_template('leaderboard.html')
 
+"""
+Application View Routes :: Password Reset
+"""
 
-# ----------------------------------------
-# Routes for HTML error handling
-# ----------------------------------------
+@app.route('/reset-password', methods=('GET', 'POST'))
+def forgot_password():
+    form = forms.ResetPassword()
+    # TODO: Handle token creation for password reset
+    # token = request.args.get('token', None)
+    # form = ResetPassword(request.form)
+    # if form.validate_on_submit():
+    #     email = form.email.data
+    #     student = student.query.filter_by(email=email).first()
+    #     if student:
+    #         token = student.get_token()
+    #         print token
+    return render_template('reset.html', form=form)
+
+"""
+Application View Routes :: HTTP Error handling
+"""
 
 @app.errorhandler(403)
 def forbidden(error):
@@ -199,9 +225,9 @@ def server_error(error):
     """Handles HTML 500 error conditions."""
     return render_template('500.html'), 500
 
-# ----------------------------------------
-# Run the application
-# ----------------------------------------
+"""
+Run the application
+"""
 
 
 if __name__ == '__main__':

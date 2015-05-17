@@ -15,21 +15,25 @@ __status__ = "Development"
 
 import datetime
 
-
 from bcrypt import gensalt
 from bcrypt import hashpw
 from flask.ext.login import UserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from peewee import *
 from playhouse.postgres_ext import PostgresqlExtDatabase, JSONField
 
-DATABASE = PostgresqlExtDatabase(database='leaderboard', user='postgres')
-ROUNDS = 5     # Number of hash rounds, set low for development, increase for production
+import config
+
+DATABASE = config.DATABASE
+CHARACTER_ENCODING = config.CHARACTER_ENCODING
+ROUNDS = config.ROUNDS
+SECRET_KEY = config.SECRET_KEY
 
 
 class BaseModel(Model):
     """A base model that will use our Postgresql database."""
     class Meta:
-        database = DATABASE
+        database = config.DATABASE
 
 
 class Student(UserMixin, BaseModel):
@@ -72,7 +76,7 @@ class Student(UserMixin, BaseModel):
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
-                    password=hashpw(password.encode('UTF-8'), gensalt(ROUNDS)),
+                    password=hashpw(password.encode(CHARACTER_ENCODING), gensalt(ROUNDS)),
                     github_username=github_username,
                     city=city,
                     state=state,
@@ -80,6 +84,22 @@ class Student(UserMixin, BaseModel):
                     is_admin=admin)
         except IntegrityError:
             raise ValueError("Sorry, user already exists.")
+
+    def get_token(self, expiration=1800):
+        s = Serializer(SECRET_KEY, expiration)
+        return s.dumps({'student': self.id}).decode(CHARACTER_ENCODING)
+
+    @staticmethod
+    def verify_token(token):
+        s = Serializer(SECRET_KEY)
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        id = data.get('student')
+        if id:
+            return Student.query.get(id)
+        return None
 
 
 def initialize():
