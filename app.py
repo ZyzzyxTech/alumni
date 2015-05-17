@@ -165,12 +165,12 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/update', methods=('GET', 'POST'))
+@app.route('/update')
 @login_required
 def update():
     """Update the current user's profile"""
     form = forms.UpdateProfile()
-    # TODO: Update student profile
+    # TODO: update student information
     return render_template('update-profile.html', form=form)
 
 
@@ -198,6 +198,14 @@ Application View Routes :: Password Reset
 def forgot_password():
     form = forms.ResetPassword()
     # TODO: Handle token creation for password reset
+    # token = request.args.get('token', None)
+    # form = ResetPassword(request.form)
+    # if form.validate_on_submit():
+    #     email = form.email.data
+    #     student = student.query.filter_by(email=email).first()
+    #     if student:
+    #         token = student.get_token()
+    #         print token
     return render_template('reset.html', form=form)
 
 """
