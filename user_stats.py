@@ -1,4 +1,6 @@
-"""Deals with individual user statistics."""
+"""
+Deals with individual user statistics.
+"""
 
 __author__ = "Ken W. Alger, David Dinkins, Dan Johnson,  Keri Nicole"
 __copyright__ = "Copyright 2015, ZyzzyxTech"
@@ -17,7 +19,8 @@ class UserStats:
         self.points = data["points"]
         
     def has_topic_points(self, topic):
-        """Checks to see if the user has any points in a given topic.
+        """
+        Checks to see if the user has any points in a given topic.
         Returns False in the case of an invalid topic name.
         """
         try:
@@ -26,7 +29,8 @@ class UserStats:
             return False
         
     def get_topic_rank(self, topic):
-        """Shows how a particular topic ranks among all other topics 
+        """
+        Shows how a particular topic ranks among all other topics
         the user has earned atleast one point in.
         
         Raises a KeyError in the case the user has no points in
@@ -41,5 +45,7 @@ class UserStats:
         raise KeyError("'" + topic + "'" + " is not a valid key.")
         
     def get_topic_points(self, topic):
-        """Gets all the points a user has gained for a particular topic."""
+        """
+        Gets all the points a user has gained for a particular topic.
+        """
         return self.points[topic]

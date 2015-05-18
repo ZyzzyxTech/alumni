@@ -1,4 +1,6 @@
-"""Handles the form data for the application"""
+"""
+Handles the form data for the application
+"""
 
 __author__ = "Ken W. Alger, David Dinkins, Dan Johnson, Keri Nicole"
 __copyright__ = "Copyright 2015, ZyzzyxTech"
@@ -83,13 +85,17 @@ class StudentRegisterForm(Form):
 
 
 class LoginForm(Form):
-    """The form for logging into the site"""
+    """
+    The form for logging into the site
+    """
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
 
 
 class UpdateProfile(Form):
-    """The form for updating profile information"""
+    """
+    The form for updating profile information
+    """
 
     email = StringField(
         'Email',

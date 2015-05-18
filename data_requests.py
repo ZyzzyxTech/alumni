@@ -1,4 +1,6 @@
-"""Handles data requests to server."""
+"""
+Handles data requests to server.
+"""
 
 __author__ = "Ken W. Alger, David Dinkins, Dan Johnson, Keri Nicole"
 __copyright__ = "Copyright 2015, ZyzzyxTech"
@@ -17,7 +19,18 @@ from requests.exceptions import RequestException
 
 
 def request_user_data(username):
-    """Get the JSON data as a dict for a Treehouse student."""
+    """
+    Get the JSON data as a dict for a Treehouse student.
+
+    Args:
+        username: A Treehouse user name
+
+    Raises:
+        Timeout:
+        ConnectionError:
+        RequestException:
+        ValueError: A non-valid Treehouse username
+    """
     data = None
 
     try:

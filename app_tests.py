@@ -6,12 +6,12 @@ import requests
 from playhouse.test_utils import test_database
 from playhouse.postgres_ext import PostgresqlExtDatabase
 
-from models import Student, User
+from models import Student
 
 TEST_DB = PostgresqlExtDatabase(database='test', user='postgres')
 TEST_DB.connect()
-TEST_DB.drop_tables([Student, User])
-TEST_DB.create_tables([Student, User], safe=True)
+TEST_DB.drop_tables([Student])
+TEST_DB.create_tables([Student], safe=True)
 
 STUDENT_DATA = {
     'th_username': 'kenalger',

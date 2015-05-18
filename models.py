@@ -1,7 +1,8 @@
 
-"""Handles the database related functions for the application.
-    Note that we are using PostgresqlExtDatabase as opposed to
-    the usual peewee.PostgresqlDatabase.
+"""
+Handles the database related functions for the application.
+Note that we are using PostgresqlExtDatabase as opposed to
+peewee.PostgresqlDatabase.
 """
 
 __author__ = "Ken W. Alger, David Dinkins, Dan Johnson, Keri Nicole"
@@ -20,7 +21,7 @@ from bcrypt import hashpw
 from flask.ext.login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from peewee import *
-from playhouse.postgres_ext import PostgresqlExtDatabase, JSONField
+from playhouse.postgres_ext import JSONField
 
 import config
 
@@ -31,13 +32,16 @@ SECRET_KEY = config.SECRET_KEY
 
 
 class BaseModel(Model):
-    """A base model that will use our Postgresql database."""
+    """
+    A base model that will use our Postgresql database.
+    """
     class Meta:
         database = config.DATABASE
 
 
 class Student(UserMixin, BaseModel):
-    """The student model which includes:
+    """T
+    he student model which includes:
     Treehouse Username
     Treehouse User JSON data
     Email address
@@ -66,7 +70,25 @@ class Student(UserMixin, BaseModel):
     @classmethod
     def create_student(cls, username, user_json, email, first_name, last_name, password, github_username, city,
                     state, country, admin=False):
-        """Generate the student table in the database."""
+        """
+        Generate the student table in the database.
+
+        Args:
+            username: the student's Treehouse username (Unique)
+            user_json: the student's Treehouse badge/point report in JSON format
+            email: the student's email address (Unique)
+            first_name: the student's first name
+            last_name: the student's last name
+            password: the student's password, stored as a bcrypt hash
+            github_username: the student's username for github.com
+            city: the student's city of residence
+            state: the student's state of residence
+            country: the student's country of residence
+            admin: is the student a site administrator
+
+        Raises:
+            ValueError: if student is already registered in the system.
+        """
         # TODO: Generate JSON data prior to storage of user profile data.
         try:
             with DATABASE.transaction():
@@ -88,12 +110,11 @@ class Student(UserMixin, BaseModel):
     def get_token(self, expiration=1800):
         """
         Encode a secure token
-        :param expiration:
-        :return:
-        """
-        """
-        :param expiration:
-        :return:
+
+        Args:
+            expiration: the time in seconds the token will live
+        Returns:
+            token: the generated token
         """
         s = Serializer(SECRET_KEY, expiration)
         return s.dumps({'student': self.id}).decode(CHARACTER_ENCODING)
