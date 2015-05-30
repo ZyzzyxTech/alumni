@@ -40,8 +40,8 @@ class BaseModel(Model):
 
 
 class Student(UserMixin, BaseModel):
-    """T
-    he student model which includes:
+    """
+    The student model which includes:
     Treehouse Username
     Treehouse User JSON data
     Email address
