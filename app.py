@@ -17,6 +17,8 @@ from flask.ext.login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
 from flask_mail import Mail
 
+from assets import assets
+
 import config
 import data_requests
 import forms
@@ -35,7 +37,11 @@ HOST = config.HOST_IP
 
 # Create an instance of the Flask class
 app = Flask(__name__)
+# Register mail server configuration
 mail = Mail(app)
+# Initialize assets for CSS and JavaScript
+assets.init_app(app)
+
 
 # set the secret key. keep this really secret...
 app.secret_key = config.SECRET_KEY
