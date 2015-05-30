@@ -29,6 +29,7 @@ DATABASE = config.DATABASE
 CHARACTER_ENCODING = config.CHARACTER_ENCODING
 ROUNDS = config.ROUNDS
 SECRET_KEY = config.SECRET_KEY
+DEFAULT_EXPIRATION = config.DEFAULT_EXPIRATION
 
 
 class BaseModel(Model):
@@ -62,6 +63,7 @@ class Student(UserMixin, BaseModel):
     state = CharField(max_length=50)
     country = CharField(max_length=25)
     joined_at = DateTimeField(default=datetime.datetime.now)
+    email_confirmed = BooleanField(default=False)
     is_admin = BooleanField(default=False)
 
     class Meta:
@@ -69,7 +71,7 @@ class Student(UserMixin, BaseModel):
 
     @classmethod
     def create_student(cls, username, user_json, email, first_name, last_name, password, github_username, city,
-                    state, country, admin=False):
+                    state, country, email_confirmed=False, admin=False):
         """
         Generate the student table in the database.
 
@@ -103,11 +105,12 @@ class Student(UserMixin, BaseModel):
                     city=city,
                     state=state,
                     country=country,
+                    email_confirmed=email_confirmed,
                     is_admin=admin)
         except IntegrityError:
             raise ValueError("Sorry, user already exists.")
 
-    def get_token(self, expiration=1800):
+    def get_token(self, expiration=DEFAULT_EXPIRATION):
         """
         Encode a secure token
 

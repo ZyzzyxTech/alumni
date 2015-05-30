@@ -43,3 +43,11 @@ MAIL_PORT = 465
 MAIL_USE_SSL = True
 MAIL_USERNAME = 'username'
 MAIL_PASSWORD = 'password'
+
+
+"""
+Security Configurations
+"""
+
+SECURITY_PASSWORD_SALT = '023sdlkahjsdof80awdjflndsofu2098urocnnfuy397@$Q(!@&(&(fda9f87a9&&23*&*YUYIU*(@'
+DEFAULT_EXPIRATION = 3600

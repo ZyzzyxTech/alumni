@@ -15,9 +15,10 @@ from bcrypt import hashpw
 from flask import (Flask, g, render_template, flash, redirect, url_for, abort)
 from flask.ext.login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
-from flask_mail import Mail
+from flask_mail import Mail, Message
 
 from assets import assets
+from security import generate_confirmation_token, confirm_token
 
 import config
 import data_requests
@@ -128,6 +129,12 @@ def register():
             state=form.state.data,
             country=form.country.data
         )
+
+        # Now we'll send the email confirmation link
+        subject = "Confirm your email"
+
+        token = generate_confirmation_token(form.email.data)
+
         return redirect(url_for('index'))
     return render_template('register.html', form=form, title='Register')
 
@@ -227,7 +234,7 @@ def forgot_password():
     form = forms.ResetPassword()
     # TODO: Handle token creation for password reset
     # token = request.args.get('token', None)
-    # form = ResetPassword(request.form)
+    # form = forms.ResetPassword(request.form)
     # if form.validate_on_submit():
     #     email = form.email.data
     #     student = student.query.filter_by(email=email).first()
