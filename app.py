@@ -19,6 +19,9 @@ from flask_mail import Mail, Message
 
 from assets import assets
 from security import generate_confirmation_token, confirm_token
+from models import Student
+
+import datetime
 
 import config
 import data_requests
@@ -138,6 +141,21 @@ def register():
         return redirect(url_for('index'))
     return render_template('register.html', form=form, title='Register')
 
+@app.route('/confirm/<token>')
+@login_required
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    student = Student.query.filter_by(email=email).first_or_404()
+    if student.confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        student.confirmed = True
+        student.confirmed_on = datetime.datetime.now()
+        models.Student.update(student)
+
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
@@ -214,12 +232,12 @@ def leaderboard(username=None):
     template = 'leaderboard.html'
     if username and username != current_user.username:
         try:
-            user = models.User.select.where(
-                models.User.th_username**username).get()
+            student = models.Student.select.where(
+                models.Student.th_username**username).get()
         except models.DoesNotExist:
             abort(404)
         else:
-            stream = user.leaders.limit(100)
+            stream = models.Student.select().limit(25)
     return render_template('leaderboard.html', title='Students')
 
 """

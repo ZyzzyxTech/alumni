@@ -63,7 +63,8 @@ class Student(UserMixin, BaseModel):
     state = CharField(max_length=50)
     country = CharField(max_length=25)
     joined_at = DateTimeField(default=datetime.datetime.now)
-    email_confirmed = BooleanField(default=False)
+    confirmed = BooleanField(default=False)
+    confirmed_on = DateTimeField(default=datetime.datetime.now)
     is_admin = BooleanField(default=False)
 
     class Meta:

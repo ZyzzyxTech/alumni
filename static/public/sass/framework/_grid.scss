@@ -1,0 +1,54 @@
+//=============================================================
+// Grid   --   Page Layout Code                          	
+//=============================================================
+
+@for $i from 1 through $column-count {
+
+	$context: column-context($column-width, $column-count, $gutter-width) !global;
+	$target: ($column-width * $i) + ($gutter-width * ($i - 1));
+
+	//Generate column modifier classes
+	.column--#{$i} {
+		width: percentage($target / $context);
+	}
+}
+
+// Grid Container
+
+.row {
+	@extend %clearfix;
+	@extend %centered;
+	width: 90%;
+	margin: 2em auto;
+
+	// Make nested grid 100% 
+	[class^="column--"] > & {
+		width: 100%;
+	}
+
+	// Set a max width for grid container
+	@media (min-width: 1100px) {
+		max-width: $column-max-width;
+	}
+}
+
+// Column Styles
+
+[class^="column--"] {
+	@media (min-width: 1px) and (max-width: 768px) {
+		margin-top: em(12px);
+		margin-bottom: em(12px);
+	}
+
+	@media (min-width: 769px) {
+		@include doubly(percentage($gutter-width / $context));
+		float: left;
+		min-height: 1px;
+		/*padding-left: 10px; 
+		padding-right: 10px;*/
+
+		&:last-of-type {
+			float: right;
+		}
+	}
+}

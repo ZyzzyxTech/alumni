@@ -1,0 +1,27 @@
+//=============================================================
+// Helpers	--	Commonly Used Classes
+//=============================================================
+
+// Center Elements
+
+.centered {
+	float: none;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+// Centered Text
+.text-center {
+	text-align: center;
+}
+
+// Full-Width
+.full-width {
+	width: 100%;
+}
+
+// Float Right
+.right {
+	float: right;
+}

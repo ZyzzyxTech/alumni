@@ -1,0 +1,19 @@
+ul li {
+    list-style: none;
+}
+
+.search-form input[type=text] {
+	@include border-radius($primary-border-radius);
+	border: 1px solid $primary-border-color;
+	font-size: 1.25em;
+	padding: .5em;
+	margin-bottom: .5em;
+}
+
+.search-form input[type=checkbox] {
+	margin-right: .25em;
+}
+
+.search-form label {
+	margin-right: .5em;
+}
