@@ -71,8 +71,9 @@ class Student(UserMixin, BaseModel):
         order_by = ('-joined_at',)
 
     @classmethod
-    def create_student(cls, username, user_json, email, first_name, last_name, password, github_username, city,
-                    state, country, email_confirmed=False, admin=False):
+    def create_student(cls, username, user_json, email, first_name, last_name, password,
+                       github_username, city, state, country,
+                       email_confirmed=False, admin=False):
         """
         Generate the student table in the database.
 
@@ -125,13 +126,13 @@ class Student(UserMixin, BaseModel):
 
     @staticmethod
     def verify_token(token):
-        s = Serializer(SECRET_KEY)
+        serializer = Serializer(SECRET_KEY)
         try:
-            data = s.loads(token)
+            data = serializer.loads(token)
         except:
             return None
-        id = data.get('student')
-        if id:
+        student_id = data.get('student')
+        if student_id:
             return Student.query.get(id)
         return None
 
