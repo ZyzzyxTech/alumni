@@ -27,7 +27,7 @@ class ApiRequestsTests(unittest.TestCase):
         try:
             request_user_data(self.__INVALID_USERNAME)
         except UserRequestException as e:
-            self.assertEqual(e.reason, "Recieved invalid data from profile.")
+            self.assertEqual(e.reason, "Received invalid data from profile.")
         else:
             self.assertTrue(False)
 
