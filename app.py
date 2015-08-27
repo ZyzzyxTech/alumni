@@ -15,6 +15,7 @@ from bcrypt import hashpw
 from flask import (Flask, g, render_template, flash, redirect, url_for, abort)
 from flask.ext.login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
+
 from flask_mail import Mail, Message
 
 from assets import assets
@@ -27,7 +28,6 @@ import config
 import data_requests
 import forms
 import models
-
 
 
 # Statement for enabling the development environment
@@ -45,7 +45,6 @@ app = Flask(__name__)
 mail = Mail(app)
 # Initialize assets for CSS and JavaScript
 assets.init_app(app)
-
 
 # set the secret key. keep this really secret...
 app.secret_key = config.SECRET_KEY

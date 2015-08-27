@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
         {% assets "css_all" %}
-            <link rel="stylesheet" href="(( ASSET_URL }}">
+            <link rel="stylesheet" href="{{ ASSET_URL }}" type="text/css">
         {% endassets %}
 
         {% block css %}{% endblock %}
@@ -68,16 +68,14 @@
 
         <div class="row">
 
-          <div class="main">
-
               {% block content %}{% endblock %}
 
-          </div>
-
         </div>
-
-        {% include "footer.html" %}
-
+        <footer>
+            <div class="row">
+            {% include "footer.html" %}
+            </div>
+        </footer>
         <!-- JavaScript at the bottom for fast page loading -->
         {% assets "js_all" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>

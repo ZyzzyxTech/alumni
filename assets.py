@@ -4,7 +4,8 @@ __author__ = 'Ken'
 from flask_assets import Bundle, Environment
 
 css = Bundle(
-    "css/normalize.min.css",
+    "css/normalize.css",
+    "css/foundation.css",
     "css/styles.css",
     filters="cssmin",
     output="public/css/common.css"
